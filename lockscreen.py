@@ -38,7 +38,10 @@ class LockScreen(QWidget):
         self.connect_signals()
         self.apply_styles()
         self.start_clock()
-        self.password.setFocus()
+        
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setFocus()
+        
 
     # ----------------------------
     # Window Setup
