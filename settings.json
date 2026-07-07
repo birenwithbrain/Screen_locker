@@ -1,0 +1,16 @@
+{
+    "app_name": "Recording Guard",
+    "window_title": "Recording Guard",
+    "password": "12345",
+
+    "background": "translucent",
+    "accent": "#FF7D0B",
+    "text": "#ffffff",
+
+    "show_clock": true,
+    "show_date": true,
+
+    "recording_message": "Recording in Progress",
+
+    "footer": "Unauthorized access prohibited."
+}

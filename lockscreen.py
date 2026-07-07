@@ -4,19 +4,30 @@ from PySide6.QtWidgets import (
     QPushButton,
     QLineEdit,
     QVBoxLayout,
+    QHBoxLayout,
     QMessageBox,
     QFrame,
 )
 
-from PySide6.QtGui import QPixmap
+import random
+from PySide6.QtGui import QPainter, QPixmap
+
 from PySide6.QtCore import Qt, QTimer
 from datetime import datetime
 
 from config import *
 from auth import verify_password
+from PySide6.QtWidgets import QGraphicsDropShadowEffect
 
 
 class LockScreen(QWidget):
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+
+        pixmap = QPixmap("assets\\background.jpg")
+
+        painter.drawPixmap(self.rect(), pixmap)
 
     def __init__(self):
         super().__init__()
@@ -34,6 +45,7 @@ class LockScreen(QWidget):
     # ----------------------------
 
     def setup_window(self):
+        
         self.setWindowTitle(WINDOW_TITLE)
 
         self.setWindowFlags(
@@ -50,26 +62,34 @@ class LockScreen(QWidget):
 
     def create_widgets(self):
 
-        self.logo = QLabel()
-        pixmap = QPixmap("assets/logo.png")
+        self.left_logo = QLabel()
+        # from PySide6.QtGui import QPixmap
+        num = random.randint(1, 5)  # Random number between 1 and 5
 
-        self.logo.setPixmap(
+        filename = f"assets/logo{num}.png"
+
+        pixmap = QPixmap(filename)
+
+        self.left_logo.setStyleSheet("background: transparent;")
+        self.left_logo.setPixmap(
             pixmap.scaled(
-                100,
-                100,
+                250,
+                250,
                 Qt.KeepAspectRatio,
                 Qt.SmoothTransformation
             )
         )
 
-        self.logo.setAlignment(Qt.AlignCenter)
+        self.left_logo.setAlignment(Qt.AlignCenter)
+
 
         self.title = QLabel("📹 Recording Guard")
         self.title.setAlignment(Qt.AlignCenter)
         self.title.setObjectName("title")
 
 
-        self.subtitle = QLabel("Recording in Progress")
+        # self.subtitle = QLabel("Recording in Progress")
+        self.subtitle = QLabel(RECORDING_MESSAGE)
         self.subtitle.setAlignment(Qt.AlignCenter)
         self.subtitle.setObjectName("subtitle")
 
@@ -93,6 +113,19 @@ class LockScreen(QWidget):
         self.unlock_button = QPushButton("🔓 Unlock")
 
         self.card = QFrame()
+
+        shadow = QGraphicsDropShadowEffect()
+
+        shadow.setBlurRadius(35)
+
+        shadow.setXOffset(0)
+
+        shadow.setYOffset(0)
+
+        shadow.setColor(Qt.black)
+
+        self.card.setGraphicsEffect(shadow)
+
         self.card.setObjectName("card")
 
     # ----------------------------
@@ -101,50 +134,74 @@ class LockScreen(QWidget):
 
     def create_layout(self):
 
-        # layout = QVBoxLayout()
 
-        # layout.setAlignment(Qt.AlignCenter)
-        main_layout = QVBoxLayout()
-        main_layout.setAlignment(Qt.AlignCenter)
 
-        card_layout = QVBoxLayout()
-        card_layout.setAlignment(Qt.AlignCenter)
-        card_layout.setSpacing(15)
+        # =========== left layout ===========
 
-        card_layout.addWidget(self.logo)
+        left_layout = QVBoxLayout()
 
-        card_layout.addWidget(self.title)
-        card_layout.addSpacing(10)
+        left_layout.addSpacing(200)
 
-        card_layout.addWidget(self.subtitle)
-        card_layout.addSpacing(20)
+        left_layout.addWidget(self.left_logo)
 
-        card_layout.addWidget(self.status)
+        left_layout.addStretch()
 
-        card_layout.addWidget(self.date_label)
-        card_layout.addWidget(self.time_label)
 
-        card_layout.addSpacing(30)
+        # =========== right layout ===========
 
-        card_layout.addWidget(self.password)
 
-        card_layout.addSpacing(20)
+        right_layout = QVBoxLayout()
+        right_layout.setAlignment(Qt.AlignCenter)
+        right_layout.setSpacing(15)
 
-        card_layout.addWidget(self.unlock_button)
+        right_layout.addWidget(self.title)
 
-        card_layout.addSpacing(25)
+        right_layout.addSpacing(10)
 
-        footer = QLabel("Unauthorized access prohibited.")
+        right_layout.addWidget(self.subtitle)
+        right_layout.addSpacing(20)
+
+        right_layout.addWidget(self.status)
+
+        right_layout.addWidget(self.date_label)
+        right_layout.addWidget(self.time_label)
+
+        right_layout.addSpacing(30)
+
+        right_layout.addWidget(self.password)
+
+        right_layout.addSpacing(20)
+
+        right_layout.addWidget(self.unlock_button)
+
+        right_layout.addSpacing(25)
+
+        # footer = QLabel("Unauthorized access prohibited.")
+        footer = QLabel(FOOTER)
         footer.setAlignment(Qt.AlignCenter)
 
-        card_layout.addWidget(footer)
+        right_layout.addWidget(footer)
 
         # self.setLayout(layout)
-        self.card.setLayout(card_layout)
+        self.card.setLayout(right_layout)
+
+        # =========== main layout ===========
+
+        main_layout = QHBoxLayout()
+
+        main_layout.addSpacing(300)
+
+        main_layout.addLayout(left_layout)
+
+        main_layout.addStretch()
 
         main_layout.addWidget(self.card)
 
+        main_layout.addSpacing(100)
+
         self.setLayout(main_layout)
+
+        
 
     # ----------------------------
     # Signals
@@ -168,21 +225,22 @@ class LockScreen(QWidget):
             background:{BACKGROUND};
             color:{TEXT};
             font-family:Segoe UI;
-            background-image: url("assets/background.jpg");
         }}
 
         QFrame#card{{
-            BACKGROUND:#000000;
+            background:rgba(20,20,20,150);
             border-radius:20px;
-            border:2px solid #333333;
+            border:2px solid #f7b416;
             padding:30px;
             min-width:500px;
             max-width:500px;
+            min-height:500px;
+            max-height:600px;
         }}
 
         QLabel {{
             color:white;
-            BACKGROUND:#000000;
+            background-color: transparent;
         }}
 
         QLabel#title {{
@@ -216,9 +274,9 @@ class LockScreen(QWidget):
         }}
 
         QLineEdit{{
-            BACKGROUND:#2b2b2b;
+            background:#2b2b2b;
             padding:12px;
-            border-radius:10px;
+            border-radius:20px;
             border:2px solid #444444;
             color:white;
             font-size:18px;
@@ -233,11 +291,11 @@ class LockScreen(QWidget):
 
         QPushButton{{
 
-            background:#ff3b30;
+            background:#FF7D0B;
 
             padding:12px;
 
-            border-radius:10px;
+            border-radius:20px;
 
             font-size:18px;
 
@@ -249,13 +307,13 @@ class LockScreen(QWidget):
 
         QPushButton:hover{{
 
-            background:#ff5a52;
+            background:#f7b416;
 
         }}
 
         QPushButton:pressed{{
 
-            BACKGROUND:#d63031;
+            background:#d63031;
 
         }}
 
@@ -307,17 +365,4 @@ class LockScreen(QWidget):
 
             self.password.clear()
 
-    # ----------------------------
-    # Future Feature
-    # ----------------------------
-
-    def center_card(self):
-        """
-        Placeholder.
-
-        In the next sprint this method will create
-        a rounded central panel (card) that contains
-        all widgets, instead of placing them directly
-        on the window.
-        """
-        pass
+    
