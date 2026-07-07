@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QVBoxLayout,
     QMessageBox,
+    QFrame,
 )
 
 from PySide6.QtCore import Qt, QTimer
@@ -69,41 +70,55 @@ class LockScreen(QWidget):
 
         self.unlock_button = QPushButton("🔓 Unlock")
 
+        self.card = QFrame()
+        self.card.setObjectName("card")
+
     # ----------------------------
     # Layout
     # ----------------------------
 
     def create_layout(self):
 
-        layout = QVBoxLayout()
+        # layout = QVBoxLayout()
 
-        layout.setAlignment(Qt.AlignCenter)
+        # layout.setAlignment(Qt.AlignCenter)
+        main_layout = QVBoxLayout()
+        main_layout.setAlignment(Qt.AlignCenter)
 
-        layout.addWidget(self.title)
-        layout.addSpacing(10)
+        card_layout = QVBoxLayout()
+        card_layout.setAlignment(Qt.AlignCenter)
+        card_layout.setSpacing(15)
 
-        layout.addWidget(self.subtitle)
-        layout.addSpacing(20)
+        card_layout.addWidget(self.title)
+        card_layout.addSpacing(10)
 
-        layout.addWidget(self.date_label)
-        layout.addWidget(self.time_label)
+        card_layout.addWidget(self.subtitle)
+        card_layout.addSpacing(20)
 
-        layout.addSpacing(30)
+        card_layout.addWidget(self.date_label)
+        card_layout.addWidget(self.time_label)
 
-        layout.addWidget(self.password)
+        card_layout.addSpacing(30)
 
-        layout.addSpacing(20)
+        card_layout.addWidget(self.password)
 
-        layout.addWidget(self.unlock_button)
+        card_layout.addSpacing(20)
 
-        layout.addSpacing(25)
+        card_layout.addWidget(self.unlock_button)
+
+        card_layout.addSpacing(25)
 
         footer = QLabel("Unauthorized access prohibited.")
         footer.setAlignment(Qt.AlignCenter)
 
-        layout.addWidget(footer)
+        card_layout.addWidget(footer)
 
-        self.setLayout(layout)
+        # self.setLayout(layout)
+        self.card.setLayout(card_layout)
+
+        main_layout.addWidget(self.card)
+
+        self.setLayout(main_layout)
 
     # ----------------------------
     # Signals
@@ -129,8 +144,18 @@ class LockScreen(QWidget):
             font-family:Segoe UI;
         }}
 
+        QFrame#card{{
+            BACKGROUND:#1d1d1d;
+            border-radius:20px;
+            border:2px solid #333333;
+            padding:30px;
+            min-width:500px;
+            max-width:500px;
+        }}
+
         QLabel {{
             color:white;
+            BACKGROUND:#1d1d1d;
         }}
 
         QLabel#title {{
@@ -153,30 +178,48 @@ class LockScreen(QWidget):
             font-weight:bold;
         }}
 
-        QLineEdit {{
+        QLineEdit{{
+            BACKGROUND:#2b2b2b;
             padding:12px;
-            font-size:18px;
             border-radius:10px;
             border:2px solid #444444;
-            background:#222222;
             color:white;
-        }}
-
-        QLineEdit:focus {{
-            border:2px solid {ACCENT};
-        }}
-
-        QPushButton {{
-            background:{ACCENT};
-            color:white;
-            padding:12px;
-            border:none;
-            border-radius:10px;
             font-size:18px;
         }}
 
-        QPushButton:hover {{
+        QLineEdit:focus{{
+
+        border:2px solid #ff3b30;
+
+        }}
+
+
+        QPushButton{{
+
+            background:#ff3b30;
+
+            padding:12px;
+
+            border-radius:10px;
+
+            font-size:18px;
+
+            font-weight:bold;
+
+            color:white;
+
+        }}
+
+        QPushButton:hover{{
+
             background:#ff5a52;
+
+        }}
+
+        QPushButton:pressed{{
+
+            BACKGROUND:#d63031;
+
         }}
 
         """)
