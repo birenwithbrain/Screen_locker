@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
     QFrame,
 )
 
+from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt, QTimer
 from datetime import datetime
 
@@ -26,6 +27,7 @@ class LockScreen(QWidget):
         self.connect_signals()
         self.apply_styles()
         self.start_clock()
+        self.password.setFocus()
 
     # ----------------------------
     # Window Setup
@@ -48,13 +50,32 @@ class LockScreen(QWidget):
 
     def create_widgets(self):
 
+        self.logo = QLabel()
+        pixmap = QPixmap("assets/logo.png")
+
+        self.logo.setPixmap(
+            pixmap.scaled(
+                100,
+                100,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation
+            )
+        )
+
+        self.logo.setAlignment(Qt.AlignCenter)
+
         self.title = QLabel("📹 Recording Guard")
         self.title.setAlignment(Qt.AlignCenter)
         self.title.setObjectName("title")
 
+
         self.subtitle = QLabel("Recording in Progress")
         self.subtitle.setAlignment(Qt.AlignCenter)
         self.subtitle.setObjectName("subtitle")
+
+        self.status = QLabel("🟢 Recording Active")
+        self.status.setAlignment(Qt.AlignCenter)
+        self.status.setObjectName("status")
 
         self.date_label = QLabel()
         self.date_label.setAlignment(Qt.AlignCenter)
@@ -65,8 +86,9 @@ class LockScreen(QWidget):
         self.time_label.setObjectName("time")
 
         self.password = QLineEdit()
-        self.password.setPlaceholderText("Enter Password")
+        self.password.setPlaceholderText("🔒 Enter your password")
         self.password.setEchoMode(QLineEdit.Password)
+        self.password.setAlignment(Qt.AlignCenter)
 
         self.unlock_button = QPushButton("🔓 Unlock")
 
@@ -89,11 +111,15 @@ class LockScreen(QWidget):
         card_layout.setAlignment(Qt.AlignCenter)
         card_layout.setSpacing(15)
 
+        card_layout.addWidget(self.logo)
+
         card_layout.addWidget(self.title)
         card_layout.addSpacing(10)
 
         card_layout.addWidget(self.subtitle)
         card_layout.addSpacing(20)
+
+        card_layout.addWidget(self.status)
 
         card_layout.addWidget(self.date_label)
         card_layout.addWidget(self.time_label)
@@ -142,10 +168,11 @@ class LockScreen(QWidget):
             background:{BACKGROUND};
             color:{TEXT};
             font-family:Segoe UI;
+            background-image: url("assets/background.jpg");
         }}
 
         QFrame#card{{
-            BACKGROUND:#1d1d1d;
+            BACKGROUND:#000000;
             border-radius:20px;
             border:2px solid #333333;
             padding:30px;
@@ -155,7 +182,7 @@ class LockScreen(QWidget):
 
         QLabel {{
             color:white;
-            BACKGROUND:#1d1d1d;
+            BACKGROUND:#000000;
         }}
 
         QLabel#title {{
@@ -166,6 +193,16 @@ class LockScreen(QWidget):
         QLabel#subtitle {{
             font-size:18px;
             color:#bbbbbb;
+        }}
+
+        QLabel#status{{
+
+            color:#00d26a;
+
+            font-size:16px;
+
+            font-weight:bold;
+
         }}
 
         QLabel#date {{
