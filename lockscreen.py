@@ -38,9 +38,13 @@ class LockScreen(QWidget):
         self.connect_signals()
         self.apply_styles()
         self.start_clock()
-        
+
         self.setFocusPolicy(Qt.StrongFocus)
         self.setFocus()
+
+        self.logo_timer = QTimer(self)
+        self.logo_timer.timeout.connect(self.change_logo)
+        self.logo_timer.start(10000)   # 60 seconds
         
 
     # ----------------------------
@@ -65,7 +69,7 @@ class LockScreen(QWidget):
 
     def change_logo(self):
 
-        num = random.randint(1, 5)
+        num = random.randint(1, 8)
 
         filename = f"assets/logo{num}.png"
 
@@ -88,23 +92,23 @@ class LockScreen(QWidget):
 
         self.left_logo = QLabel()
         # from PySide6.QtGui import QPixmap
-        num = random.randint(1, 5)  # Random number between 1 and 5
+        # num = random.randint(1, 5)  # Random number between 1 and 5
 
-        filename = f"assets/logo{num}.png"
+        # filename = f"assets/logo{num}.png"
 
-        pixmap = QPixmap(filename)
+        # pixmap = QPixmap(filename)
 
-        self.left_logo.setStyleSheet("background: transparent;")
-        self.left_logo.setPixmap(
-            pixmap.scaled(
-                250,
-                250,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation
-            )
-        )
+        # self.left_logo.setStyleSheet("background: transparent;")
+        # self.left_logo.setPixmap(
+        #     pixmap.scaled(
+        #         250,
+        #         250,
+        #         Qt.KeepAspectRatio,
+        #         Qt.SmoothTransformation
+        #     )
+        # )
 
-        # self.change_logo()
+        self.change_logo()
 
         self.left_logo.setAlignment(Qt.AlignCenter)
 
