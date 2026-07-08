@@ -44,7 +44,7 @@ class LockScreen(QWidget):
 
         self.logo_timer = QTimer(self)
         self.logo_timer.timeout.connect(self.change_logo)
-        self.logo_timer.start(10000)   # 60 seconds
+        self.logo_timer.start(30000)   # 60 seconds
         
 
     # ----------------------------
@@ -69,20 +69,30 @@ class LockScreen(QWidget):
 
     def change_logo(self):
 
-        num = random.randint(1, 8)
+        while True:
+            num = random.randint(1, 13)
+
+            if getattr(self, "current_logo", None) != num:
+                break
+
+        self.current_logo = num
 
         filename = f"assets/logo{num}.png"
 
+        self.set_logo(filename)
+
+
+
+    def set_logo(self, filename):
+
         pixmap = QPixmap(filename)
 
-        self.left_logo.setPixmap(
-            pixmap.scaled(
-                250,
-                250,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation
-            )
+        scaled = pixmap.scaledToHeight(
+            280,
+            Qt.SmoothTransformation
         )
+
+        self.left_logo.setPixmap(scaled)
 
     # ----------------------------
     # Create Widgets
@@ -108,8 +118,9 @@ class LockScreen(QWidget):
         #     )
         # )
 
-        self.change_logo()
+        # self.left_logo.setFixedSize(320, 320)
 
+        self.change_logo()
         self.left_logo.setAlignment(Qt.AlignCenter)
 
 
