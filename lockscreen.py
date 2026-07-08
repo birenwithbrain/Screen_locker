@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
 )
 
 import random
-from PySide6.QtGui import QPainter, QPixmap
+from PySide6.QtGui import QPainter, QPixmap, QColor
 
 from PySide6.QtCore import Qt, QTimer
 from datetime import datetime
@@ -60,6 +60,27 @@ class LockScreen(QWidget):
         self.showFullScreen()
 
     # ----------------------------
+    # Swap Logo
+    # ----------------------------
+
+    def change_logo(self):
+
+        num = random.randint(1, 5)
+
+        filename = f"assets/logo{num}.png"
+
+        pixmap = QPixmap(filename)
+
+        self.left_logo.setPixmap(
+            pixmap.scaled(
+                250,
+                250,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation
+            )
+        )
+
+    # ----------------------------
     # Create Widgets
     # ----------------------------
 
@@ -82,6 +103,8 @@ class LockScreen(QWidget):
                 Qt.SmoothTransformation
             )
         )
+
+        # self.change_logo()
 
         self.left_logo.setAlignment(Qt.AlignCenter)
 
@@ -115,21 +138,30 @@ class LockScreen(QWidget):
 
         self.unlock_button = QPushButton("🔓 Unlock")
 
+        # ---------- Card Container ----------
+
+        self.card_container = QFrame()
+        self.card_container.setObjectName("cardContainer")
+
+        # ---------- Card ----------
+
         self.card = QFrame()
-
-        shadow = QGraphicsDropShadowEffect()
-
-        shadow.setBlurRadius(35)
-
-        shadow.setXOffset(0)
-
-        shadow.setYOffset(0)
-
-        shadow.setColor(Qt.black)
-
-        self.card.setGraphicsEffect(shadow)
-
         self.card.setObjectName("card")
+
+        # ---------- Shadow ----------
+
+        shadow = QGraphicsDropShadowEffect(self)
+
+        shadow.setBlurRadius(200)
+
+        shadow.setOffset(0, 0)
+
+        # shadow.setColor(Qt.white)
+        shadow.setColor(
+            QColor(247,180,22,120)
+        )
+
+        self.card_container.setGraphicsEffect(shadow)
 
     # ----------------------------
     # Layout
@@ -198,9 +230,18 @@ class LockScreen(QWidget):
 
         main_layout.addStretch()
 
-        main_layout.addWidget(self.card)
+        # main_layout.addWidget(self.card)
+        container_layout = QVBoxLayout()
 
-        main_layout.addSpacing(100)
+        container_layout.setContentsMargins(25,25,25,25)
+
+        container_layout.addWidget(self.card)
+
+        self.card_container.setLayout(container_layout)
+
+        main_layout.addWidget(self.card_container)
+
+        main_layout.addSpacing(90)
 
         self.setLayout(main_layout)
 
@@ -230,15 +271,24 @@ class LockScreen(QWidget):
             font-family:Segoe UI;
         }}
 
+        QFrame#cardContainer{{
+            background:transparent;
+            border-radius:30px;
+            margin:0px;
+            padding:0px;
+            
+            
+        }}
+
         QFrame#card{{
-            background:rgba(20,20,20,150);
-            border-radius:20px;
+            background:rgba(0,0,0,250);
+            border-radius:30px;
             border:2px solid #f7b416;
             padding:30px;
             min-width:500px;
             max-width:500px;
-            min-height:500px;
             max-height:600px;
+            
         }}
 
         QLabel {{
